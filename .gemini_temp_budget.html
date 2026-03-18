@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Buco - Presupuesto Premium</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5048e5',
+            darkBg: '#0f1117',
+            cardBg: 'rgba(30, 41, 59, 0.7)',
+            warning: '#ef4444',
+            safe: '#10b981',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Glassmorphism and Charts -->
+<style data-purpose="glassmorphism-effects">
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .glass-alert {
+      background: rgba(239, 68, 68, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+  </style>
+<style data-purpose="circular-progress">
+    /* Simple SVG circular chart styling */
+    .circular-chart {
+      display: block;
+      margin: 10px auto;
+      max-width: 80%;
+      max-height: 250px;
+    }
+    .circle-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.05);
+      stroke-width: 2.5;
+    }
+    .circle {
+      fill: none;
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      animation: progress 1s ease-out forwards;
+    }
+    @keyframes progress {
+      0% { stroke-dasharray: 0 100; }
+    }
+  </style>
+</head>
+<body class="bg-darkBg text-white font-sans min-h-screen pb-24">
+<!-- BEGIN: Header -->
+<header class="sticky top-0 z-50 px-6 py-6 flex justify-between items-center bg-darkBg/80 backdrop-blur-md">
+<h1 class="text-2xl font-bold tracking-tight">Presupuesto</h1>
+<div class="flex gap-4">
+<!-- Add Icon -->
+<button aria-label="Añadir presupuesto" class="p-2 rounded-full glass-card">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Settings Icon -->
+<button aria-label="Configuración" class="p-2 rounded-full glass-card">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: Header -->
+<main class="px-6 space-y-8">
+<!-- BEGIN: Monthly Chart Section -->
+<section class="flex flex-col items-center" data-purpose="budget-summary-chart">
+<div class="relative w-full flex justify-center items-center">
+<!-- SVG Donut Chart -->
+<svg class="circular-chart w-64 h-64" viewbox="0 0 36 36">
+<path class="circle-bg" d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+<path class="circle stroke-primary" d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="72, 100"></path>
+</svg>
+<!-- Center Text Information -->
+<div class="absolute inset-0 flex flex-col items-center justify-center pt-2">
+<span class="text-gray-400 text-sm font-medium">Gastado este mes</span>
+<span class="text-4xl font-bold mt-1 text-white">$2,450</span>
+<div class="h-px w-12 bg-white/20 my-2"></div>
+<span class="text-gray-400 text-xs">de $3,400</span>
+</div>
+</div>
+</section>
+<!-- END: Monthly Chart Section -->
+<!-- BEGIN: Alert Section -->
+<section data-purpose="notifications">
+<div class="glass-alert rounded-2xl p-4 flex items-center gap-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center text-warning">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-medium text-white">Límite alcanzado</p>
+<p class="text-xs text-gray-300">Has llegado al 85% de tu presupuesto de <span class="font-bold">Comida</span>.</p>
+</div>
+</div>
+</section>
+<!-- END: Alert Section -->
+<!-- BEGIN: Category Budget Section -->
+<section class="space-y-6" data-purpose="category-list">
+<div class="flex justify-between items-center">
+<h2 class="text-xl font-semibold">Presupuesto por Categoría</h2>
+<button class="text-primary text-sm font-medium">Ver todos</button>
+</div>
+<div class="space-y-5">
+<!-- Category: Comida -->
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="flex items-center gap-2">
+<span class="p-1.5 rounded-lg glass-card text-warning">🍔</span>
+              Comida
+            </span>
+<span class="font-medium">$850 <span class="text-gray-500 font-normal">/ $1,000</span></span>
+</div>
+<div class="h-2.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-warning rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<!-- Category: Entretenimiento -->
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="flex items-center gap-2">
+<span class="p-1.5 rounded-lg glass-card text-primary">🎬</span>
+              Entretenimiento
+            </span>
+<span class="font-medium">$300 <span class="text-gray-500 font-normal">/ $500</span></span>
+</div>
+<div class="h-2.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 60%"></div>
+</div>
+</div>
+<!-- Category: Transporte -->
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="flex items-center gap-2">
+<span class="p-1.5 rounded-lg glass-card text-safe">🚗</span>
+              Transporte
+            </span>
+<span class="font-medium">$160 <span class="text-gray-500 font-normal">/ $400</span></span>
+</div>
+<div class="h-2.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-safe rounded-full" style="width: 40%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Category Budget Section -->
+</main>
+<!-- BEGIN: Bottom Tab Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-3 bg-darkBg/95 backdrop-blur-xl border-t border-white/5">
+<div class="max-w-lg mx-auto flex justify-between items-center">
+<!-- Home Icon -->
+<button class="flex flex-col items-center gap-1 text-gray-500">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Home</span>
+</button>
+<!-- Gastos Icon -->
+<button class="flex flex-col items-center gap-1 text-gray-500">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Gastos</span>
+</button>
+<!-- Tarjetas Icon -->
+<button class="flex flex-col items-center gap-1 text-gray-500">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Tarjetas</span>
+</button>
+<!-- Presupuesto Icon (Active) -->
+<button class="flex flex-col items-center gap-1 text-primary">
+<svg class="h-6 w-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5 2C10.12 2 9 3.12 9 4.5V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-4v-.5C15 3.12 13.88 2 12.5 2h-1zM11 4.5c0-.28.22-.5.5-.5h1c.28 0 .5.22.5.5V5h-2v-.5zM5 7h14v12H5V7z"></path>
+</svg>
+<span class="text-[10px] font-bold">Presupuesto</span>
+</button>
+<!-- AI Icon -->
+<button class="flex flex-col items-center gap-1 text-gray-500">
+<div class="relative">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<div class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+</div>
+<span class="text-[10px]">AI</span>
+</button>
+</div>
+</nav>
+<!-- END: Bottom Tab Navigation -->
+</body></html>

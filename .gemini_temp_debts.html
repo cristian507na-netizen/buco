@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Buco Finance - Deudas</title>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5048e5',
+            darkBg: '#0a0a0a',
+            glass: 'rgba(255, 255, 255, 0.05)',
+            glassBorder: 'rgba(255, 255, 255, 0.1)',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            'twelve': '12px',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    body {
+      background-color: #0a0a0a;
+      color: #ffffff;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .primary-glow {
+      box-shadow: 0 0 20px rgba(80, 72, 229, 0.2);
+    }
+    /* Circular Progress Visualization */
+    .progress-ring__circle {
+      transition: stroke-dashoffset 0.35s;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased pb-24">
+<!-- BEGIN: Header -->
+<header class="sticky top-0 z-50 px-6 py-6 bg-darkBg/80 backdrop-blur-md flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button aria-label="Go back" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Deudas</h1>
+</div>
+<button aria-label="Add new debt" class="bg-primary p-2 rounded-twelve shadow-lg primary-glow transition-transform active:scale-95">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</header>
+<!-- END: Header -->
+<main class="px-6 space-y-6">
+<!-- BEGIN: Main Debt Cards -->
+<section class="space-y-4" data-purpose="featured-debts">
+<!-- Bank Loan Card (Circular Progress) -->
+<div class="glass-effect p-5 rounded-twelve flex items-center justify-between gap-4">
+<div class="space-y-1">
+<span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Préstamo Bancario</span>
+<h2 class="text-2xl font-bold">$5,250</h2>
+<p class="text-xs text-gray-500">Restante de $15,000</p>
+</div>
+<div class="relative w-20 h-20">
+<svg class="w-full h-full">
+<circle class="text-white/10" cx="40" cy="40" fill="transparent" r="32" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-primary progress-ring__circle" cx="40" cy="40" fill="transparent" r="32" stroke="currentColor" stroke-dasharray="201" stroke-dashoffset="70.35" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-xs font-bold">65%</span>
+</div>
+</div>
+</div>
+<!-- Personal Debt Card (Linear Progress) -->
+<div class="glass-effect p-5 rounded-twelve space-y-4">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Deuda Personal</span>
+<h2 class="text-2xl font-bold">$1,400</h2>
+<p class="text-xs text-gray-500">Restante de $2,000</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-semibold text-primary">30%</span>
+</div>
+</div>
+<div class="w-full bg-white/10 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 30%"></div>
+</div>
+</div>
+</section>
+<!-- END: Main Debt Cards -->
+<!-- BEGIN: Projection Alert -->
+<section data-purpose="smart-insight">
+<div class="glass-effect border-l-4 border-l-primary p-4 rounded-twelve flex items-center gap-4">
+<div class="bg-primary/20 p-2.5 rounded-twelve">
+<svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-medium leading-snug">
+            Si pagas <span class="text-primary font-bold">$150 extra</span> al mes, terminarás de pagar en <span class="text-primary font-bold">8 meses menos</span>.
+          </p>
+</div>
+</div>
+</section>
+<!-- END: Projection Alert -->
+<!-- BEGIN: Active Loans List -->
+<section class="space-y-4" data-purpose="other-debts">
+<h3 class="text-sm font-semibold text-gray-400 uppercase tracking-widest px-1">Otras Deudas</h3>
+<div class="space-y-3">
+<!-- List Item 1 -->
+<div class="glass-effect px-4 py-3 rounded-twelve flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-semibold">Tarjeta Visa</p>
+<p class="text-xs text-gray-500">Siguiente: 12 Oct</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">$840.00</p>
+<div class="flex items-center gap-1 justify-end">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<p class="text-[10px] text-gray-400">80% Pagado</p>
+</div>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="glass-effect px-4 py-3 rounded-twelve flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-semibold">Crédito Consumo</p>
+<p class="text-xs text-gray-500">Siguiente: 25 Oct</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold">$2,100.00</p>
+<div class="flex items-center gap-1 justify-end">
+<div class="w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
+<p class="text-[10px] text-gray-400">45% Pagado</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Active Loans List -->
+</main>
+<!-- BEGIN: Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-darkBg/90 backdrop-blur-xl border-t border-white/5 px-6 pb-8 pt-4 z-50">
+<div class="flex items-center justify-between max-w-md mx-auto">
+<button class="flex flex-col items-center gap-1 text-gray-500" data-purpose="nav-home">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-500" data-purpose="nav-expenses">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px] font-medium">Gastos</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-500" data-purpose="nav-cards">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px] font-medium">Tarjetas</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary" data-purpose="nav-debts">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.5 3a.5.5 0 0 1 .5.5V5h3.5a.5.5 0 0 1 0 1H12v3.5a.5.5 0 0 1-1 0V6H7.5a.5.5 0 0 1 0-1H11V3.5a.5.5 0 0 1 .5-.5z" opacity=".2"></path>
+<path d="M4 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8zm2 0v8h12v-8H6z" stroke="currentColor" stroke-width="2"></path>
+</svg>
+<span class="text-[10px] font-bold">Deudas</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-500" data-purpose="nav-ai">
+<div class="relative">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="absolute -top-1 -right-1 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+</div>
+<span class="text-[10px] font-medium">IA</span>
+</button>
+</div>
+</nav>
+<!-- END: Navigation Bar -->
+</body></html>

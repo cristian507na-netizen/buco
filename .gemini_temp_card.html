@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Credit Card Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5048e5",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121121",
+                        "card-dark": "#1d1c26",
+                        "border-dark": "#2a2938",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(80, 72, 229, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-gradient {
+            background: linear-gradient(135deg, #5048e5 0%, #312e81 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-border-dark px-4 py-4">
+<div class="max-w-md mx-auto flex items-center justify-between">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-border-dark rounded-lg transition-colors">
+<span class="material-symbols-outlined block">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold">Credit Card</h1>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-border-dark rounded-lg transition-colors">
+<span class="material-symbols-outlined block">more_horiz</span>
+</button>
+</div>
+</header>
+<main class="flex-1 max-w-md mx-auto w-full px-4 py-6 space-y-6">
+<!-- Virtual Card Section -->
+<section class="space-y-4">
+<div class="card-gradient p-6 rounded-xl shadow-2xl relative overflow-hidden aspect-[1.58/1] flex flex-col justify-between" data-alt="Abstract deep purple and blue silk gradient pattern">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-4xl opacity-80">contactless</span>
+<span class="font-bold tracking-widest italic text-xl">PREMIUM</span>
+</div>
+<div>
+<p class="text-white/70 text-xs font-medium uppercase tracking-wider mb-1">Balance Actual</p>
+<p class="text-white text-3xl font-bold tracking-tight">$1,200.50</p>
+</div>
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-white/80 font-mono tracking-widest text-sm">•••• 5824</p>
+<p class="text-white/60 text-[10px] uppercase">Exp: 08/28</p>
+</div>
+<div class="h-8 w-12 bg-white/20 rounded flex items-center justify-center backdrop-blur-sm">
+<div class="w-6 h-6 rounded-full bg-red-500/80 -mr-2"></div>
+<div class="w-6 h-6 rounded-full bg-yellow-500/80"></div>
+</div>
+</div>
+</div>
+<!-- Card Stats -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-card-dark border border-border-dark p-4 rounded-xl">
+<p class="text-slate-400 text-xs font-medium mb-1">Credit Limit</p>
+<p class="text-lg font-bold">$5,000.00</p>
+</div>
+<div class="bg-card-dark border border-border-dark p-4 rounded-xl">
+<p class="text-slate-400 text-xs font-medium mb-1">Available Credit</p>
+<p class="text-lg font-bold text-primary">$3,799.50</p>
+</div>
+</div>
+</section>
+<!-- Smart Warning Alert -->
+<section>
+<div class="glass-effect rounded-xl p-4 flex gap-3 items-center border-primary/20 bg-primary/5">
+<div class="flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-2xl">info</span>
+</div>
+<p class="text-sm font-medium leading-tight text-slate-200">
+                    Si solo pagas el mínimo, tu deuda crecerá <span class="text-primary font-bold">15%</span> en 6 meses.
+                </p>
+</div>
+</section>
+<!-- Important Dates -->
+<section class="bg-card-dark border border-border-dark rounded-xl overflow-hidden">
+<div class="p-4 border-b border-border-dark flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">calendar_today</span>
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Statement Details</span>
+</div>
+</div>
+<div class="divide-y divide-border-dark">
+<div class="p-4 flex justify-between items-center">
+<p class="text-slate-400 text-sm">Statement Closing Date</p>
+<p class="font-bold">Oct 28</p>
+</div>
+<div class="p-4 flex justify-between items-center bg-primary/5">
+<p class="text-slate-400 text-sm">Payment Due Date</p>
+<p class="font-bold text-primary">Nov 12</p>
+</div>
+</div>
+</section>
+<!-- Recent Transactions -->
+<section class="space-y-4">
+<div class="flex justify-between items-end px-1">
+<h3 class="text-lg font-bold">Recent Transactions</h3>
+<a class="text-primary text-sm font-medium hover:underline" href="#">See All</a>
+</div>
+<div class="space-y-3">
+<!-- Transaction 1 -->
+<div class="flex items-center justify-between p-4 bg-card-dark border border-border-dark rounded-xl">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-slate-800 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-100">ios</span>
+</div>
+<div>
+<p class="font-semibold text-sm">Apple Store</p>
+<p class="text-slate-400 text-xs">Electronics • Today</p>
+</div>
+</div>
+<p class="font-bold text-sm">-$99.00</p>
+</div>
+<!-- Transaction 2 -->
+<div class="flex items-center justify-between p-4 bg-card-dark border border-border-dark rounded-xl">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-[#00704A]/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[#00704A]">coffee</span>
+</div>
+<div>
+<p class="font-semibold text-sm">Starbucks</p>
+<p class="text-slate-400 text-xs">Food &amp; Drink • Yesterday</p>
+</div>
+</div>
+<p class="font-bold text-sm">-$5.50</p>
+</div>
+<!-- Transaction 3 -->
+<div class="flex items-center justify-between p-4 bg-card-dark border border-border-dark rounded-xl">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-500">local_gas_station</span>
+</div>
+<div>
+<p class="font-semibold text-sm">Shell Station</p>
+<p class="text-slate-400 text-xs">Transport • Oct 24</p>
+</div>
+</div>
+<p class="font-bold text-sm">-$42.00</p>
+</div>
+</div>
+</section>
+<div class="h-20"></div> <!-- Spacer for Nav -->
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-dark/95 backdrop-blur-xl border-t border-border-dark z-20">
+<div class="max-w-md mx-auto flex items-center justify-around px-4 py-2">
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">credit_card</span>
+<span class="text-[10px] font-medium">Cards</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">pie_chart</span>
+<span class="text-[10px] font-medium">Insights</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>
