@@ -1,56 +1,145 @@
-import { MainBalanceCard } from "@/components/finance/main-balance-card";
-import { FinancialScoreCard } from "@/components/finance/financial-score-card";
-import { SummaryGrid } from "@/components/finance/summary-grid";
-import { RecentTransactions } from "@/components/finance/recent-transactions";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import DashboardClient from "@/components/dashboard/DashboardClient";
+import { ensureCashAccount } from "@/app/dashboard/actions";
 
-export default function DashboardPage() {
-  const currentDate = new Date().toLocaleDateString("es-ES", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export default async function DashboardPage() {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+  const ninetyDaysAgoStr = ninetyDaysAgo.toISOString().split("T")[0];
+
+  const prevMonthStart = new Date();
+  prevMonthStart.setMonth(prevMonthStart.getMonth() - 1);
+  prevMonthStart.setDate(1);
+  const prevMonthEnd = new Date();
+  prevMonthEnd.setDate(0);
+  const prevMonthStartStr = prevMonthStart.toISOString().split("T")[0];
+  const prevMonthEndStr = prevMonthEnd.toISOString().split("T")[0];
+
+  const [
+    { data: profile },
+    { data: recentExpenses },
+    { data: yearExpenses },
+    { data: prevMonthExpenses },
+    { data: incomes },
+    { data: bankAccounts },
+    { data: creditCards },
+    { data: reminders },
+    { data: savingsGoals },
+    { data: goalContributions },
+    { data: userSettings },
+    { data: debts },
+  ] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase
+      .from("expenses")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("fecha", { ascending: false })
+      .limit(20),
+    supabase
+      .from("expenses")
+      .select("*")
+      .eq("user_id", user.id)
+      .gte("fecha", ninetyDaysAgoStr)
+      .order("fecha", { ascending: false }),
+    supabase
+      .from("expenses")
+      .select("*")
+      .eq("user_id", user.id)
+      .gte("fecha", prevMonthStartStr)
+      .lte("fecha", prevMonthEndStr),
+    supabase
+      .from("incomes")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("fecha", { ascending: false }),
+    supabase
+      .from("bank_accounts")
+      .select("*")
+      .eq("user_id", user.id),
+    supabase
+      .from("credit_cards")
+      .select("*")
+      .eq("user_id", user.id),
+    supabase
+      .from("reminders")
+      .select("*")
+      .eq("user_id", user.id)
+      .neq("status", "deleted")
+      .order("fecha", { ascending: true }),
+    supabase
+      .from("savings_goals")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "active"),
+    supabase
+      .from("goal_contributions")
+      .select("*")
+      .eq("user_id", user.id),
+    supabase
+      .from("user_settings")
+      .select("*")
+      .eq("user_id", user.id)
+      .single(),
+    supabase
+      .from("debts")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("activa", true),
+  ]);
+
+  const expenseTransactions = (recentExpenses ?? []).map((e: any) => ({
+    ...e,
+    type: "expense",
+    date: e.fecha,
+    concept: e.descripcion || e.comercio,
+    category: e.categoria,
+    amount: e.monto,
+  }));
+
+  const incomeTransactions = (incomes ?? []).map((i: any) => ({
+    ...i,
+    type: "income",
+    date: (i.fecha || i.created_at?.split("T")[0]) ?? "",
+    fecha: (i.fecha || i.created_at?.split("T")[0]) ?? "",
+    concept: i.descripcion || i.nombre || "Ingreso",
+    category: i.categoria || "ingreso",
+    amount: i.monto,
+  }));
+
+  const allTransactions = [...expenseTransactions, ...incomeTransactions].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  // Ensure 'Cash' account exists
+  await ensureCashAccount(user.id, profile?.moneda || 'USD');
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl mx-auto w-full">
-      {/* Header section */}
-      <div className="flex flex-col gap-1 mb-2">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-          Hola, Carlos 👋
-        </h1>
-        <p className="text-gray-400 text-sm capitalize">{currentDate}</p>
-      </div>
-
-      {/* Top row: Balance + Score */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <MainBalanceCard 
-          saldoDisponible={1320.00}
-          sueldo={3500.00}
-          gastado={2180.00}
-          ahorroAcumulado={450.00}
-          porcentajeGastado={62}
-        />
-        <FinancialScoreCard score={68} />
-      </div>
-
-      {/* Middle row: Mini Summary Cards */}
-      <SummaryGrid />
-
-      {/* Bottom row: Transactions + (Later Budget Alerts) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <RecentTransactions />
-        </div>
-        <div className="col-span-1">
-          {/* Placeholder for Budget Summary Card */}
-          <div className="buco-card bg-surface h-full flex items-center justify-center text-center p-6 border-dashed border-2">
-            <div>
-              <p className="text-warning mb-2">⚠️ 3 categorías en alerta</p>
-              <p className="text-sm text-gray-500">Resumen de presupuesto en construcción</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <DashboardClient
+      initialProfile={profile}
+      initialExpenses={recentExpenses ?? []}
+      initialIncomes={incomes ?? []}
+      yearExpenses={yearExpenses ?? []}
+      prevYearExpenses={prevMonthExpenses ?? []}
+      allTransactions={allTransactions}
+      bankAccounts={bankAccounts ?? []}
+      creditCards={creditCards ?? []}
+      reminders={reminders ?? []}
+      savingsGoals={savingsGoals ?? []}
+      goalContributions={goalContributions ?? []}
+      userSettings={userSettings}
+      debts={debts ?? []}
+    />
   );
 }

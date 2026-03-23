@@ -1,93 +1,117 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Receipt,
   CreditCard,
   Target,
-  PieChart,
-  Bot,
-  LogOut,
-  Settings,
+  BarChart3,
+  GraduationCap,
+  Wallet,
+  ChevronRight
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { RealtimeStatus } from "./RealtimeStatus";
 
-const navigation = [
-  { name: "Inicio", href: "/", icon: LayoutDashboard },
+const navItems = [
+  { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Gastos", href: "/expenses", icon: Receipt },
-  { name: "Tarjetas", href: "/cards", icon: CreditCard },
-  { name: "Deudas", href: "/debts", icon: Target },
-  { name: "Presupuesto", href: "/budget", icon: PieChart },
-  { name: "IA Buco", href: "/ai", icon: Bot },
+  { name: "Cuentas", href: "/cards", icon: CreditCard },
+  { name: "Metas", href: "/goals", icon: Target },
+  { name: "Reportes", href: "/reports", icon: BarChart3 },
+  { name: "Aprende", href: "/learn", icon: GraduationCap },
 ];
 
-export function Sidebar() {
+export function Sidebar({ profile }: { profile?: any }) {
   const pathname = usePathname();
 
+  const isPremium = profile?.plan === 'premium';
+  const isPro = profile?.plan === 'pro';
+
+  const initials = profile?.nombre
+    ? profile.nombre.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+    : "U";
+
   return (
-    <div className="hidden h-screen w-64 flex-col border-r border-border bg-background lg:flex">
-      {/* Logo Area */}
-      <div className="flex h-16 shrink-0 items-center px-6 border-b border-border">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-white font-bold text-lg">B</span>
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">Buco</span>
+    <div className="w-64 border-r border-[var(--border-color)] bg-[var(--bg-card)] h-screen sticky top-0 hidden md:flex flex-col">
+      <div className="p-8 flex items-center gap-3">
+        <div className="h-9 w-9 rounded-xl bg-[#2563EB] flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+          <Wallet className="w-5 h-5" />
         </div>
+        <span className="text-2xl font-black italic tracking-tighter text-[var(--text-primary)] uppercase">Buco</span>
       </div>
 
-      {/* Primary Action */}
-      <div className="px-4 py-6">
-        <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-hover transition-colors">
-          <span className="text-lg">+</span> Agregar gasto
-        </button>
-      </div>
-
-      {/* Navigation Links */}
-      <nav className="flex flex-1 xl:flex-col flex-col gap-1 px-4 overflow-y-auto">
-        {navigation.map((item) => {
-          const isActive = pathname === item.href;
+      <nav className="flex-1 px-4 py-4 space-y-2">
+        {navItems.map((item) => {
+          const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 px-4 py-3 rounded-2xl text-[11px] font-black uppercase tracking-[0.1em] transition-all cursor-pointer group",
                 isActive
-                  ? "bg-surface text-primary"
-                  : "text-gray-400 hover:bg-surface/50 hover:text-white"
+                  ? "bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20 shadow-sm"
+                  : "text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] border border-transparent"
               )}
             >
-              <item.icon
-                className={cn(
-                  "h-5 w-5 shrink-0",
-                  isActive ? "text-primary" : "text-gray-400 group-hover:text-white"
-                )}
-                aria-hidden="true"
-              />
+              <item.icon className={cn("w-5 h-5 transition-transform group-hover:scale-110", isActive ? "text-[#2563EB]" : "text-[var(--text-muted)]")} />
               {item.name}
             </Link>
           );
         })}
       </nav>
 
-      {/* User Area */}
-      <div className="border-t border-border p-4">
-        <div className="flex items-center gap-3 rounded-xl p-3 hover:bg-surface transition-colors cursor-pointer">
-          <div className="h-10 w-10 overflow-hidden rounded-full bg-surface">
-            <img
-              src="https://api.dicebear.com/7.x/notionists/svg?seed=Carlos"
-              alt="Avatar"
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="flex-1 truncate">
-            <p className="truncate text-sm font-medium text-white">Carlos</p>
-            <p className="truncate text-xs text-gray-500">Mi Cuenta</p>
-          </div>
-          <Settings className="h-5 w-5 text-gray-400" />
+      <div className="p-4 mt-auto">
+        <div className="pt-4 border-t border-[var(--border-color)] space-y-4">
+          {!profile?.plan || profile?.plan === 'free' ? (
+            <Link
+              href="/billing"
+              className="w-full flex items-center justify-center p-3.5 rounded-2xl bg-blue-500 hover:bg-blue-600 transition-all group border border-blue-400 shadow-xl shadow-blue-500/20 mb-4"
+            >
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] italic mb-1">Empieza tu plan</span>
+                <span className="text-xs font-black text-white uppercase tracking-widest">PREMIUM 🚀</span>
+              </div>
+            </Link>
+          ) : null}
+          <Link
+            href="/profile"
+            className="w-full flex items-center justify-between p-3 rounded-2xl transition-all group hover:bg-[var(--bg-secondary)] border border-transparent hover:border-[var(--border-color)]"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500 font-black uppercase italic text-sm overflow-hidden">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span>{initials}</span>
+                )}
+              </div>
+              <div className="flex flex-col items-start overflow-hidden">
+                <span className="text-sm font-black text-[var(--text-primary)] italic leading-none mb-1 truncate w-full pr-3">
+                  {profile?.nombre || 'Usuario'}
+                </span>
+                {isPro ? (
+                  <span className="text-[9px] text-purple-400 font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md border border-purple-400/30 bg-purple-400/5">
+                    PRO 🚀
+                  </span>
+                ) : isPremium ? (
+                  <span className="text-[9px] text-[#93c5fd] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md border border-[#93c5fd]/30 bg-blue-500/5">
+                    PREMIUM
+                  </span>
+                ) : (
+                  <span className="text-[9px] text-[var(--text-muted)] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md border border-[var(--border-color)]">
+                    FREE
+                  </span>
+                )}
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[#2563EB]" />
+          </Link>
+          <RealtimeStatus />
         </div>
       </div>
     </div>

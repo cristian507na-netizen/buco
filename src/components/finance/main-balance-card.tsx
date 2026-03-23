@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { CurrencyDisplay } from "@/components/ui/currency-display";
 import { cn } from "@/lib/utils";
 
 interface DashboardSummaryProps {
@@ -29,7 +29,7 @@ export function MainBalanceCard({
               Saldo Disponible
             </h2>
             <div className="text-4xl lg:text-5xl font-bold tracking-tight text-success">
-              ${saldoDisponible.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <CurrencyDisplay amount={saldoDisponible} />
             </div>
           </div>
 
@@ -40,19 +40,18 @@ export function MainBalanceCard({
                 <span className="text-sm font-medium text-white">${sueldo.toLocaleString()}</span>
                 <span className="text-sm font-medium text-white">${gastado.toLocaleString()}</span>
               </div>
-              <Progress
-                value={porcentajeGastado}
-                className="h-2 mt-2 bg-surface border border-border"
-                indicatorColor={cn(
-                  porcentajeGastado < 60 ? "bg-success" : porcentajeGastado < 85 ? "bg-warning" : "bg-alert"
-                )}
-              />
+              <div className="w-full bg-surface border border-border rounded-full h-2 mt-2 overflow-hidden">
+                <div 
+                  className={cn("h-full rounded-full", porcentajeGastado < 60 ? "bg-success" : porcentajeGastado < 85 ? "bg-warning" : "bg-alert")} 
+                  style={{ width: `${porcentajeGastado}%` }}
+                ></div>
+              </div>
             </div>
 
             <div className="space-y-1 pl-4 border-l border-border/50 text-right">
               <span className="text-xs text-gray-500 block">Ahorro Acumulado</span>
               <span className="text-xl font-bold text-white">
-                ${ahorroAcumulado.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                <CurrencyDisplay amount={ahorroAcumulado} />
               </span>
             </div>
           </div>

@@ -34,3 +34,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sensitive keys
+vapid.json
+vapid.txt
+
+# logs & temp files
+build.log
+dev.log
+tmp/
+ts_err.txt
+tsc_errors.txt
+tsc_errors_utf8.txt
+tsout*.txt
+typescript_errors.log
+lintout*.txt
+git_status.txt
+eslint.json
+eslint_utf8.json
+.gemini/
