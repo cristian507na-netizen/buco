@@ -9,26 +9,41 @@ export function createClient() {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error('CRITICAL: Missing Supabase environment variables!')
-    // Return a mock client that doesn't throw when called
-    return {
-      auth: {
-        getUser: async () => ({ data: { user: null }, error: new Error('Configuración insuficiente') }),
-        getSession: async () => ({ data: { session: null }, error: new Error('Configuración insuficiente') }),
-      },
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: async () => ({ data: null, error: new Error('Configuración insuficiente') }),
-            order: () => ({ 
-              limit: async () => ({ data: [], error: new Error('Configuración insuficiente') }),
-              gte: () => ({ order: async () => ({ data: [], error: new Error('Configuración insuficiente') }) }),
-            }),
-          }),
-          order: () => ({ limit: async () => ({ data: [], error: new Error('Configuración insuficiente') }) }),
-        }),
-      }),
-      rpc: async () => ({ data: null, error: new Error('Configuración insuficiente') }),
-    } as any
+    
+    // Recursive Proxy to handle ANY method call chain without crashing
+    const createSafeMock = (target: any = {}): any => {
+      return new Proxy(target, {
+        get(t, prop) {
+          if (prop === 'then') return undefined; // Avoid infinite recursion with awaits
+          if (typeof prop === 'string') {
+            // Return a function that returns the proxy again (for chaining)
+            // but also acts as an async function that returns an error object
+            const mockFn = () => createSafeMock();
+            mockFn.then = (resolve: any) => resolve({ data: null, error: new Error('Configuracion insuficiente') });
+            mockFn.single = () => createSafeMock();
+            mockFn.maybeSingle = () => createSafeMock();
+            mockFn.select = () => createSafeMock();
+            mockFn.insert = () => createSafeMock();
+            mockFn.update = () => createSafeMock();
+            mockFn.delete = () => createSafeMock();
+            mockFn.eq = () => createSafeMock();
+            mockFn.neq = () => createSafeMock();
+            mockFn.order = () => createSafeMock();
+            mockFn.limit = () => createSafeMock();
+            mockFn.rpc = () => createSafeMock();
+            return mockFn;
+          }
+          return t[prop];
+        }
+      });
+    };
+
+    return createSafeMock({
+      auth: createSafeMock({
+        getUser: async () => ({ data: { user: null }, error: new Error('Configuracion insuficiente') }),
+        getSession: async () => ({ data: { session: null }, error: new Error('Configuracion insuficiente') }),
+      })
+    });
   }
 
   return createServerClient(

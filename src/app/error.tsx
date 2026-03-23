@@ -17,7 +17,8 @@ export default function Error({
   }, [error]);
 
   const isConfigError = 
-    error.message?.includes("Configuración") || 
+    error.message?.toLowerCase().includes("configuracion") || 
+    error.message?.toLowerCase().includes("configuración") || 
     error.message?.includes("NEXT_PUBLIC_SUPABASE_URL") ||
     error.digest === "2870027380";
 

@@ -452,30 +452,39 @@ export async function updateBankAccount(id: string, formData: FormData) {
   return { success: true };
 }
 export async function ensureCashAccount(userId: string, currency: string = 'USD') {
-  const supabase = createClient();
-  
-  const { data: existing } = await supabase
-    .from("bank_accounts")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("nombre_banco", "Cash")
-    .maybeSingle();
+  try {
+    const supabase = createClient();
+    
+    const { data: existing, error: fetchError } = await supabase
+      .from("bank_accounts")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("nombre_banco", "Cash")
+      .maybeSingle();
 
-  if (!existing) {
-    await supabase.from("bank_accounts").insert({
-      user_id: userId,
-      nombre_banco: "Cash",
-      alias: "Efectivo",
-      tipo_cuenta: "corriente",
-      saldo_actual: 0,
-      moneda: currency,
-      color: "#10B981",
-      icon_name: "Wallet",
-      is_default: true,
-      is_deletable: false,
-      identificador_corto: "CASH"
-    });
-    return true;
+    if (fetchError && !fetchError.message?.includes('Configuracion')) {
+      console.error("Error fetching cash account:", fetchError);
+    }
+
+    if (!existing && !fetchError) {
+      await supabase.from("bank_accounts").insert({
+        user_id: userId,
+        nombre_banco: "Cash",
+        alias: "Efectivo",
+        tipo_cuenta: "corriente",
+        saldo_actual: 0,
+        moneda: currency,
+        color: "#10B981",
+        icon_name: "Wallet",
+        is_default: true,
+        is_deletable: false,
+        identificador_corto: "CASH"
+      });
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Critical error in ensureCashAccount:", error);
+    return false;
   }
-  return false;
 }
