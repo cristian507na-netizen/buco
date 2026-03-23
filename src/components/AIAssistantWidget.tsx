@@ -80,8 +80,9 @@ export function AIAssistantWidget({ userId }: { userId?: string }) {
       {/* Trigger button — fixed bottom-right */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        style={{ zIndex: 9999 }}
         className={cn(
-          "fixed z-[1050] w-14 h-14 rounded-2xl flex items-center justify-center text-white transition-all duration-300 shadow-2xl",
+          "fixed w-14 h-14 rounded-2xl flex items-center justify-center text-white transition-all duration-300 shadow-2xl",
           "bottom-[100px] right-6 md:bottom-6 md:right-6",
           isOpen ? "scale-90 opacity-80" : "scale-100 opacity-100",
           "bg-gradient-to-br from-[#2563EB] to-[#06B6D4] hover:shadow-[#2563EB]/50 hover:scale-105"
@@ -92,8 +93,9 @@ export function AIAssistantWidget({ userId }: { userId?: string }) {
 
       {/* Panel — desktop: 320×440 bottom-right; mobile: bottom sheet full width */}
       <div
+        style={{ zIndex: 9999 }}
         className={cn(
-          "fixed z-[1050] transition-all duration-500 flex flex-col overflow-hidden shadow-2xl",
+          "fixed transition-all duration-500 flex flex-col overflow-hidden shadow-2xl",
           "md:w-[320px] md:max-h-[440px] md:bottom-[80px] md:right-6 md:left-auto md:rounded-3xl",
           "w-full h-[85vh] bottom-0 left-0 right-0 rounded-t-[24px] md:rounded-3xl",
           "bg-[#0A0F1E]/95 backdrop-blur-3xl border border-[#1F2D45]",
@@ -186,7 +188,7 @@ export function AIAssistantWidget({ userId }: { userId?: string }) {
         </div>
 
         {/* Input area */}
-        <div className="p-2.5 pb-[env(safe-area-inset-bottom,20px)] bg-[#0A0F1E] border-t border-[#1F2D45] relative z-10">
+        <div className="p-3 pb-[calc(env(safe-area-inset-bottom,20px)+70px)] md:pb-3 bg-[#0A0F1E] border-t border-[#1F2D45] relative z-10">
           {/* Suggestions — show only on initial state */}
           {visibleMessages.length === 1 && (
             <div className="flex flex-col gap-2 mb-2.5">
