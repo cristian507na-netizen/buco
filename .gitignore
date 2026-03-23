@@ -53,3 +53,5 @@ git_status.txt
 eslint.json
 eslint_utf8.json
 .gemini/
+
+.vercel

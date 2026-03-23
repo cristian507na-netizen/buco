@@ -156,9 +156,19 @@ export default function ReportsClient({
     const getFilter = (s: Date, e: Date) => (item: any) => {
       const dStr = item.fecha || item.created_at;
       if (!dStr) return false;
-      const parts = dStr.split('T')[0].split('-');
-      const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-      return isWithinInterval(date, { start: s, end: e });
+      
+      try {
+        const parts = dStr.split('T')[0].split('-');
+        if (parts.length < 3) return false;
+        
+        const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        if (isNaN(date.getTime())) return false; // Invalid Date
+        
+        return isWithinInterval(date, { start: s, end: e });
+      } catch (err) {
+        console.error("Error filtering date:", dStr, err);
+        return false;
+      }
     };
 
     const currentFilter = getFilter(start, end);

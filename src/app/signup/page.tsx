@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useRef } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
@@ -12,6 +12,9 @@ function SignupContent() {
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
   const [showPassword, setShowPassword] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => { setVisible(true); }, []);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -55,7 +58,7 @@ function SignupContent() {
       <div className="absolute top-6 left-0 right-0 md:left-8 md:right-auto md:top-8 z-50 flex justify-center md:justify-start">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
         >
           <Link href="/welcome" className="flex items-center gap-2 group">
@@ -74,7 +77,7 @@ function SignupContent() {
         onMouseLeave={handleMouseLeave}
         style={{ rotateX, rotateY, transformPerspective: 1200 }}
         initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
         transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
         className="relative w-full max-w-sm"
       >

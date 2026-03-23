@@ -972,7 +972,7 @@ export default function WelcomePage() {
       <section className="lp-hero" id="hero">
         <div className="hero-visuals">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/BCD50CE8-1CD5-4BD3-BE42-C5F30964F27C.PNG" alt="Buco Finance" className="hero-image" />
+          <img src="/hero.png" alt="Buco Finance" className="hero-image" />
           <canvas ref={canvasRef} id="fx-canvas" />
           <div className="light-ray" />
           <div className="light-ray-2" />
