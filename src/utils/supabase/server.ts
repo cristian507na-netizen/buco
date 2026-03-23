@@ -8,12 +8,32 @@ export function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('CRITICAL: Missing Supabase environment variables! Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    console.error('CRITICAL: Missing Supabase environment variables!')
+    // Return a mock client that doesn't throw when called
+    return {
+      auth: {
+        getUser: async () => ({ data: { user: null }, error: new Error('Configuración insuficiente') }),
+        getSession: async () => ({ data: { session: null }, error: new Error('Configuración insuficiente') }),
+      },
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            single: async () => ({ data: null, error: new Error('Configuración insuficiente') }),
+            order: () => ({ 
+              limit: async () => ({ data: [], error: new Error('Configuración insuficiente') }),
+              gte: () => ({ order: async () => ({ data: [], error: new Error('Configuración insuficiente') }) }),
+            }),
+          }),
+          order: () => ({ limit: async () => ({ data: [], error: new Error('Configuración insuficiente') }) }),
+        }),
+      }),
+      rpc: async () => ({ data: null, error: new Error('Configuración insuficiente') }),
+    } as any
   }
 
   return createServerClient(
-    supabaseUrl || '',
-    supabaseAnonKey || '',
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -26,8 +46,6 @@ export function createClient() {
             )
           } catch {
             // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
           }
         },
       },
