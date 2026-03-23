@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export async function POST(req: NextRequest) {
   try {
     const supabase = createClient();
@@ -24,6 +22,7 @@ Datos del usuario:
 
 Responde SOLO con JSON: {"insight": "tu insight aquí", "recommendedModule": 1, "moduleTitle": "nombre del módulo"}`;
 
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await anthropic.messages.create({
       model: "claude-opus-4-6",
       max_tokens: 256,

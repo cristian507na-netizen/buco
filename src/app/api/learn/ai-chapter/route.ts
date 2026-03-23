@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import Anthropic from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const CHAPTER_PROMPTS: Record<string, string> = {
   "m1c6": `Aplica la regla 50/30/20 a los datos reales del usuario. Calcula exactamente cuánto debería ir a cada categoría con sus ingresos, compara con lo que gasta realmente, e identifica la categoría donde más se excede. Sé directo con los números.`,
   "m2c6": `Analiza el estado de las tarjetas de crédito del usuario: saldo usado, límite total, porcentaje de utilización, y cuánto paga en intereses estimados. Identifica la tarjeta más costosa y sugiere el orden de pago óptimo.`,
@@ -37,6 +35,7 @@ Datos reales del usuario:
 
 Responde en español, con datos exactos del usuario, formato claro con bullets o números. Máximo 200 palabras. Sin frases genéricas.`;
 
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await anthropic.messages.create({
       model: "claude-opus-4-6",
       max_tokens: 512,
