@@ -159,6 +159,10 @@ const css = `
   letter-spacing: 1px;
 }
 .nav-buttons { display: flex; gap: 12px; align-items: center; }
+.desktop-only { display: flex; }
+@media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+}
 
 /* ===== HERO ===== */
 .lp-hero {
@@ -658,14 +662,16 @@ const css = `
 
 @media (max-width: 768px) {
   .lp-nav {
-    padding: 16px 20px;
+    padding: 12px 16px;
     background: rgba(248,247,245,0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(0,0,0,0.05);
-    gap: 16px; /* Ensure logo/buttons don't touch */
+    gap: 8px;
   }
-  .shimmer-btn { height: 34px; padding: 0 10px; font-size: 11px; }
-  .nav-buttons { gap: 6px; }
+  .shimmer-btn { height: 32px; padding: 0 8px; font-size: 10px; }
+  .nav-buttons { gap: 4px; }
+  .nav-logo { font-size: 20px; }
+  .nav-logo-badge { font-size: 8px; padding: 1px 4px; }
 
   .lp-hero {
     height: auto;
@@ -963,7 +969,7 @@ export default function WelcomePage() {
           Buco <span className="nav-logo-badge">BETA</span>
         </a>
         <div className="nav-buttons">
-          <a href="#about" className="shimmer-btn">Sobre nosotros</a>
+          <a href="#about" className="shimmer-btn desktop-only">Sobre nosotros</a>
           <Link href="/login" className="shimmer-btn">Iniciar sesión</Link>
           <Link href="/signup" className="shimmer-btn primary">Registrarse</Link>
         </div>
