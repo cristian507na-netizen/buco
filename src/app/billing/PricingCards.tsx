@@ -26,7 +26,6 @@ const PLANS = [
     price: "$9.99/mes",
     description: "Analítica avanzada con Inteligencia Artificial.",
     icon: Sparkles,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PREMIUM || "price_1...", // Get it from env
     features: [
       "Todo en plan Free",
       "Exportación completa a PDF",
@@ -45,7 +44,6 @@ const PLANS = [
     price: "$19.99/mes",
     description: "Poder total para tu prosperidad financiera.",
     icon: Rocket,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || "price_2...", // Get it from env
     features: [
       "Todo en plan Premium",
       "Reportes de IA ilimitados",
@@ -63,29 +61,10 @@ export function PricingCards({ currentPlan }: { currentPlan: string }) {
   const [loading, setLoading] = useState<string | null>(null);
 
   const handleUpgrade = async (plan: any) => {
-    if (plan.id === 'free') return;
-    if (plan.id === currentPlan) return;
-
-    setLoading(plan.id);
-
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        body: JSON.stringify({
-          priceId: plan.priceId,
-          planName: plan.id,
-        }),
-      });
-
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(null);
-    }
+    if (plan.id === 'free' || plan.id === currentPlan) return;
+    
+    alert("Próximamente: Las suscripciones Premium y Pro estarán disponibles pronto. Por ahora, disfruta del plan Gratuito.");
+    return;
   };
 
   return (

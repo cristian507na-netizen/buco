@@ -29,8 +29,13 @@ export function PlansModal({ isOpen, onClose, currentPlan }: PlansModalProps) {
 
   const handlePlanChange = async (planId: string) => {
     if (planId === currentPlan || planId === 'free') return;
-    setIsSubmitting(true);
     
+    // Stripe integration removed temporarily
+    alert("Próximamente: Las suscripciones Premium y Pro estarán disponibles pronto. Por ahora, disfruta del plan Gratuito.");
+    return;
+    
+    /* 
+    setIsSubmitting(true);
     try {
       // Find the price ID for the plan
       const plan = plans.find(p => p.id === planId);
@@ -59,6 +64,7 @@ export function PlansModal({ isOpen, onClose, currentPlan }: PlansModalProps) {
     } finally {
       setIsSubmitting(false);
     }
+    */
   };
 
   const plans = [
