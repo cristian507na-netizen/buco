@@ -36,24 +36,29 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  let user = null;
+  let settings = null;
+  let profile = null;
+  let accounts = [];
 
-  const { data: settings } = user ? await supabase
-    .from('user_settings')
-    .select('theme')
-    .eq('user_id', user.id)
-    .single() : { data: null };
+  try {
+    const { data: userData } = await supabase.auth.getUser();
+    user = userData?.user || null;
 
-  const { data: profile } = user ? await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single() : { data: null };
+    if (user) {
+      const [settingsRes, profileRes, accountsRes] = await Promise.all([
+        supabase.from('user_settings').select('theme').eq('user_id', user.id).single(),
+        supabase.from('profiles').select('*').eq('id', user.id).single(),
+        supabase.from('bank_accounts').select('*').eq('user_id', user.id)
+      ]);
 
-  const { data: accounts } = user ? await supabase
-    .from('bank_accounts')
-    .select('*')
-    .eq('user_id', user.id) : { data: [] };
+      settings = settingsRes.data;
+      profile = profileRes.data;
+      accounts = accountsRes.data || [];
+    }
+  } catch (error) {
+    console.error("Error in RootLayout data fetching:", error);
+  }
   
   const userTheme = settings?.theme || 'system';
 
