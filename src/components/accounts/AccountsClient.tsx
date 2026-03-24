@@ -226,10 +226,88 @@ export default function AccountsClient({
   const creditUsagePercentage = totalCreditLimit > 0 ? (totalCreditUsed / totalCreditLimit) * 100 : 0;
 
   const urgentCard = useMemo(() => {
-    return cards
+    const sorted = cards
+      .filter(c => c.tipo_tarjeta === 'credito')
+      .sort((a, b) => a.fecha_pago - b.fecha_pago);
+    
+    if (sorted.length === 0) return null;
+
+    // Solo marcar como urgente si el día actual está cerca del pago (ej: faltan 7 días o menos)
+    const today = new Date().getDate();
+    const first = sorted[0];
+    const isNearPayment = (first.fecha_pago >= today && first.fecha_pago - today <= 7) || 
+                         (first.fecha_pago < today && (31 - today + first.fecha_pago <= 7));
+    
+    return isNearPayment ? first : null;
+  }, [cards]);
+
+  const aiInsight = useMemo(() => {
+    // 1. Uso de crédito alto
+    if (creditUsagePercentage > 75) {
+      return {
+        title: "Alerta de Crédito",
+        text: `Tu utilización total es del ${creditUsagePercentage.toFixed(1)}%. Intenta pagar tus saldos para mejorar tu salud crediticia.`,
+        icon: AlertCircle,
+        color: "text-red-500",
+        bg: "bg-red-500/10"
+      };
+    }
+
+    // 2. Pagos próximos
+    const nextPayment = cards
       .filter(c => c.tipo_tarjeta === 'credito')
       .sort((a, b) => a.fecha_pago - b.fecha_pago)[0];
-  }, [cards]);
+    
+    if (nextPayment) {
+      const today = new Date().getDate();
+      const daysLeft = nextPayment.fecha_pago >= today 
+        ? nextPayment.fecha_pago - today 
+        : (31 - today + nextPayment.fecha_pago);
+      
+      if (daysLeft <= 5) {
+        return {
+          title: "Recordatorio de Pago",
+          text: `El pago de tu tarjeta ${nextPayment.nombre_tarjeta} vence en ${daysLeft} días. ¡No lo olvides!`,
+          icon: Calendar,
+          color: "text-orange-500",
+          bg: "bg-orange-500/10"
+        };
+      }
+    }
+
+    // 3. Presupuesto excedido
+    const exceededBudget = budgets.find(b => (expensesByCategory[b.categoria] || 0) > b.limite_mensual);
+    if (exceededBudget) {
+      const catName = CATEGORIES.find(c => c.id === exceededBudget.categoria)?.name || exceededBudget.categoria;
+      return {
+        title: "Límite Excedido",
+        text: `Has superado tu presupuesto en ${catName}. Considera ajustar tus gastos en esta categoría.`,
+        icon: TrendingDown,
+        color: "text-red-400",
+        bg: "bg-red-400/10"
+      };
+    }
+
+    // 4. Saldo saludable
+    const totalSavings = accounts.reduce((acc, a) => acc + Number(a.saldo_actual), 0);
+    if (totalSavings > 5000) {
+      return {
+        title: "Fortaleza Financiera",
+        text: "¡Excelente! Tienes un colchón financiero sólido. Esto te da tranquilidad ante imprevistos.",
+        icon: CheckCircle2,
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10"
+      };
+    }
+
+    return {
+      title: "Tip Financiero",
+      text: "Revisa tus suscripciones activas. A veces pagamos por servicios que ya no utilizamos.",
+      icon: TrendingDown,
+      color: "text-indigo-500",
+      bg: "bg-indigo-500/10"
+    };
+  }, [cards, creditUsagePercentage, budgets, expensesByCategory, accounts]);
 
   const handleAddCard = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -725,12 +803,12 @@ export default function AccountsClient({
                  <div className="space-y-4">
                     <div className="flex items-center justify-between text-xs font-bold">
                        <span className="text-[var(--text-muted)] uppercase tracking-widest">Otras fechas de corte</span>
-                       <span className="text-[var(--text-primary)]">{cards.length - (urgentCard ? 1 : 0)} Pendientes</span>
+                       <span className="text-[var(--text-primary)]">{cards.filter(c => c.tipo_tarjeta === 'credito').length - (urgentCard ? 1 : 0)} Registradas</span>
                     </div>
-                    {cards.filter(c => c.id !== urgentCard?.id).slice(0, 2).map(c => (
+                    {cards.filter(c => c.tipo_tarjeta === 'credito' && c.id !== urgentCard?.id).slice(0, 3).map(c => (
                        <div key={c.id} className="flex items-center justify-between p-3 bg-[var(--bg-secondary)] rounded-xl border border-white/5">
-                          <span className="text-xs font-bold text-[var(--text-secondary)] truncate w-32">{c.nombre_tarjeta}</span>
-                          <span className="text-[10px] font-black text-[var(--text-muted)]">Día {c.fecha_corte}</span>
+                          <span className="text-[10px] font-bold text-[var(--text-secondary)] truncate w-32">{c.nombre_banco} - {c.nombre_tarjeta}</span>
+                          <span className="text-[9px] font-black text-[var(--text-muted)] uppercase">Día {c.fecha_corte}</span>
                        </div>
                     ))}
                  </div>
@@ -823,15 +901,13 @@ export default function AccountsClient({
               </div>
               
               <div className="mt-8 pt-8 border-t border-white/5">
-                 <div className="p-4 bg-indigo-500/10 border border-indigo-500/10 rounded-2xl">
+                 <div className={cn("p-4 border rounded-2xl transition-colors", aiInsight.bg, aiInsight.color.replace('text-', 'border-').replace('500', '500/20'))}>
                     <div className="flex items-center gap-3 mb-2">
-                       <TrendingDown className="w-5 h-5 text-indigo-500" />
-                       <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Recomendación IA</span>
+                       <aiInsight.icon className={cn("w-5 h-5", aiInsight.color)} />
+                       <span className={cn("text-[10px] font-black uppercase tracking-widest", aiInsight.color)}>{aiInsight.title}</span>
                     </div>
-                    <p className="text-[11px] font-medium text-indigo-400 leading-relaxed">
-                       {accounts.length && Number(accounts[0].saldo_actual) > 5000 
-                         ? "Tu cuenta de ahorro creció un 12.5% respecto al mes pasado. ¡Buen trabajo!"
-                         : "Considera configurar recordatorios para tu tarjeta con corte el día 15."}
+                    <p className={cn("text-[11px] font-medium leading-relaxed opacity-90", aiInsight.color)}>
+                       {aiInsight.text}
                     </p>
                  </div>
               </div>
