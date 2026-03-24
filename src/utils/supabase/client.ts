@@ -16,7 +16,7 @@ export function createClient() {
             mockFn.then = (resolve: any) => resolve({ data: null, error: new Error('Configuracion insuficiente') });
             // Add common methods for chaining
             ['single', 'maybeSingle', 'select', 'insert', 'update', 'delete', 'eq', 'neq', 'order', 'limit', 'rpc'].forEach(m => {
-              mockFn[m] = () => createSafeMock();
+              (mockFn as any)[m] = () => createSafeMock();
             });
             return mockFn;
           }
