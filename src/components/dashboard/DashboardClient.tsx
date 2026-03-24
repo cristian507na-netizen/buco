@@ -449,11 +449,8 @@ export default function DashboardClient({
   const totalMinPayments = creditCards.filter(c => c.tipo_tarjeta === 'credito').reduce((acc: number, c: any) => {
     const minPercent = Number(c.pago_minimo_porcentaje) || 5;
     return acc + (Number(c.saldo_actual) * (minPercent / 100));
-  }, 0);
-  
-  // Available Balance = Saldo real cuentas débito - Cuotas deudas - Pagos mínimos TC
-  // We no longer subtract totalMonthlyExpenses because they are already auto-deducted from bank balance via the RPC on registration.
-  const availableBalance = rawAccountBalance - totalDebtInstallments - totalMinPayments;
+  }, 0);  // Available Balance: spendable accounts (Banks Corriente/Nomina + Debit Cards)
+  const availableBalance = rawAccountBalance;
   const freeBalance = availableBalance;
 
   // Remove obsolete alerts and references
@@ -705,70 +702,63 @@ export default function DashboardClient({
                         <div className="flex flex-col max-h-[85vh]">
                            {/* Header */}
                            <div className="p-6 pb-2 flex justify-between items-center border-b border-[var(--border-color)]">
-                              <h3 className="text-xl font-black uppercase italic tracking-tighter">Ver Desglose</h3>
+                              <h3 className="text-xl font-black uppercase italic tracking-tighter text-[var(--text-primary)]">Ver Desglose</h3>
                               <X className="w-5 h-5 text-[var(--text-muted)] cursor-pointer hover:text-[var(--text-primary)] transition-colors" onClick={() => setActiveModal(null)} />
                            </div>
 
                            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-                               {/* RESUMEN ACTUAL CALCULO */}
+                               {/* SECCIÓN 1: RESUMEN DE FONDOS */}
                                <section className="space-y-4">
                                   <div className="flex items-center justify-between px-1">
-                                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] italic">Cálculo de Flujo</h4>
-                                     <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Saldo Mensual</span>
+                                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] italic">Resumen de Fondos</h4>
+                                     <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Saldo Real</span>
                                   </div>
                                    <div className="space-y-3">
-                                     {/* SALDO CUENTAS DÉBITO (+) */}
-                                     <div className="flex justify-between items-center p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                                        <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                              <TrendingUp className="w-4 h-4 text-emerald-500" />
+                                     {/* SALDO TOTAL (+) */}
+                                     <div className="flex justify-between items-center p-5 bg-blue-600/10 rounded-[2rem] border border-blue-600/20 shadow-xl shadow-blue-500/5">
+                                        <div className="flex items-center gap-4">
+                                           <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
+                                              <Wallet className="w-5 h-5 text-white" />
                                            </div>
                                            <div className="flex flex-col">
-                                              <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">Saldo Cuentas Débito</span>
-                                              <span className="text-[9px] font-bold text-emerald-500/50 uppercase tracking-wider">Cuentas y Tarjetas Débito</span>
+                                              <span className="text-sm font-black text-[var(--text-primary)] uppercase italic leading-tight">Saldo Disponible</span>
+                                              <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Total en Cuentas Débito</span>
                                            </div>
                                         </div>
-                                        <span className="font-black text-emerald-600 dark:text-emerald-400 text-sm">
-                                           +<CurrencyDisplay amount={rawAccountBalance} />
+                                        <span className="font-black text-[var(--text-primary)] text-2xl tracking-tighter">
+                                           <CurrencyDisplay amount={rawAccountBalance} />
                                         </span>
                                      </div>
 
                                      <div className="h-px bg-[var(--border-color)] mx-4 my-2 opacity-50" />
 
-                                     <div className="px-1 mb-2">
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-red-500/60 italic">Reservas Automáticas</h4>
-                                     </div>
-
-                                     {/* DEUDAS (-) */}
-                                     <div className="flex justify-between items-center p-4 bg-red-500/5 rounded-2xl border border-red-500/10 opacity-80">
-                                        <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
-                                              <AlertCircle className="w-4 h-4 text-red-500" />
+                                     {/* COMPROMISOS (Informativo solamente) */}
+                                     <div className="p-4 bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-color)] space-y-3">
+                                        <p className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">Pagos y Compromisos Pendientes</p>
+                                        
+                                        <div className="flex justify-between items-center">
+                                           <div className="flex items-center gap-2">
+                                             <div className="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center">
+                                               <AlertCircle className="w-3 h-3 text-red-500" />
+                                             </div>
+                                             <span className="text-xs font-bold text-[var(--text-secondary)]">Cuotas de Deudas</span>
                                            </div>
-                                           <div className="flex flex-col">
-                                              <span className="text-xs font-black text-red-600 dark:text-red-400">Cuotas de Deudas</span>
-                                              <span className="text-[9px] font-bold text-red-500/50 uppercase tracking-wider">Compromisos Activos</span>
-                                           </div>
+                                           <span className="text-xs font-black text-red-500"> -<CurrencyDisplay amount={totalDebtInstallments} /></span>
                                         </div>
-                                        <span className="font-black text-red-600 dark:text-red-400 text-sm">
-                                           -<CurrencyDisplay amount={totalDebtInstallments} />
-                                        </span>
-                                     </div>
 
-                                     {/* PAGOS MINIMOS (-) */}
-                                     <div className="flex justify-between items-center p-4 bg-red-500/5 rounded-2xl border border-red-500/10 opacity-80">
-                                        <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
-                                              <CreditCard className="w-4 h-4 text-red-500" />
+                                        <div className="flex justify-between items-center">
+                                           <div className="flex items-center gap-2">
+                                             <div className="w-6 h-6 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                                               <CreditCard className="w-3 h-3 text-orange-500" />
+                                             </div>
+                                             <span className="text-xs font-bold text-[var(--text-secondary)]">Reserva Pagos TC (5%)</span>
                                            </div>
-                                           <div className="flex flex-col">
-                                              <span className="text-xs font-black text-red-600 dark:text-red-400">Reserva Pagos TC</span>
-                                              <span className="text-[8px] font-bold text-red-500/50 uppercase tracking-wider">Ahorro para pago mínimo (5%)</span>
-                                           </div>
+                                           <span className="text-xs font-black text-orange-500"> -<CurrencyDisplay amount={totalMinPayments} /></span>
                                         </div>
-                                        <span className="font-black text-red-600 dark:text-red-400 text-sm">
-                                           -<CurrencyDisplay amount={totalMinPayments} />
-                                        </span>
+                                        
+                                        <p className="text-[8px] text-[var(--text-muted)] italic opacity-60 pt-1 leading-relaxed">
+                                           * Estos montos son informativos y no se descuentan de tu saldo disponible.
+                                        </p>
                                      </div>
                                   </div>
                                </section>
@@ -776,12 +766,11 @@ export default function DashboardClient({
                                {/* SECCIÓN 2: DETALLE DE CUENTAS */}
                                <section className="space-y-4">
                                   <div className="flex items-center justify-between px-1">
-                                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] italic">Distribución de Fondos</h4>
-                                     <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Saldo Real</span>
+                                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] italic">Distribución por Cuenta</h4>
                                   </div>
-                                  <div className="space-y-2 pb-20">
+                                  <div className="space-y-2">
                                      {normalAccounts.map(acc => (
-                                        <div key={acc.id} className="flex justify-between items-center p-3.5 bg-white/5 rounded-2xl border border-white/5">
+                                        <div key={acc.id} className="flex justify-between items-center p-3.5 bg-white/[0.03] dark:bg-white/5 rounded-2xl border border-[var(--border-color)]">
                                            <div className="flex flex-col">
                                               <span className="text-xs font-black text-[var(--text-primary)]">{acc.alias}</span>
                                               <span className="text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-wider">{acc.nombre_banco}</span>
@@ -792,8 +781,8 @@ export default function DashboardClient({
                                   </div>
                                </section>
 
-                              {/* SECCIÓN 2: CUENTA DE AHORRO */}
-                              <section className="space-y-4 p-5 bg-blue-500/5 rounded-[24px] border border-blue-500/10 border-dashed">
+                              {/* SECCIÓN 3: CUENTA DE AHORRO */}
+                              <section className="space-y-4 p-5 bg-blue-500/5 rounded-[24px] border border-blue-500/10 border-dashed mb-6">
                                  <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                        <PiggyBank className="w-4 h-4 text-blue-500" />
@@ -816,84 +805,10 @@ export default function DashboardClient({
                                        ))
                                     )}
                                  </div>
-
-                                 <div className="pt-2 space-y-3">
-                                    <p className="text-[9px] font-bold text-blue-500/60 uppercase italic tracking-wider leading-relaxed">
-                                       "Este dinero está apartado y no cuenta como saldo disponible para gastos del día a día."
-                                    </p>
-                                    
-                                    {!showTransferForm ? (
-                                       <button 
-                                          onClick={() => setShowTransferForm(true)}
-                                          className="flex items-center gap-2 px-3 py-1.5 bg-blue-500 text-white rounded-full text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-blue-500/20"
-                                       >
-                                          <ArrowLeftRight className="w-3 h-3" /> Transferir
-                                       </button>
-                                    ) : (
-                                       <div className="space-y-3 p-4 bg-white/5 rounded-2xl animate-in fade-in slide-in-from-top-2">
-                                          <div className="grid grid-cols-2 gap-2">
-                                             <div className="space-y-1">
-                                                <label className="text-[8px] font-black text-blue-500/60 uppercase">Desde</label>
-                                                <select 
-                                                   value={transferFrom} 
-                                                   onChange={(e) => setTransferFrom(e.target.value)}
-                                                   className="w-full bg-[var(--bg-secondary)] text-[10px] font-bold p-2 rounded-lg outline-none"
-                                                >
-                                                   <option value="">Origen...</option>
-                                                   {[...normalAccounts, ...savingsAccounts].map(acc => (
-                                                      <option key={acc.id} value={acc.id}>{acc.alias}</option>
-                                                   ))}
-                                                </select>
-                                             </div>
-                                             <div className="space-y-1">
-                                                <label className="text-[8px] font-black text-blue-500/60 uppercase">Hacia</label>
-                                                <select 
-                                                   value={transferTo} 
-                                                   onChange={(e) => setTransferTo(e.target.value)}
-                                                   className="w-full bg-[var(--bg-secondary)] text-[10px] font-bold p-2 rounded-lg outline-none"
-                                                >
-                                                   <option value="">Destino...</option>
-                                                   {[...normalAccounts, ...savingsAccounts].map(acc => (
-                                                      <option key={acc.id} value={acc.id}>{acc.alias}</option>
-                                                   ))}
-                                                </select>
-                                             </div>
-                                          </div>
-                                          <div className="space-y-1">
-                                             <label className="text-[8px] font-black text-blue-500/60 uppercase">Monto</label>
-                                             <div className="relative">
-                                                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-blue-500 text-[10px] font-bold">$</span>
-                                                <input 
-                                                   type="text" 
-                                                   value={transferAmount}
-                                                   onChange={(e) => setTransferAmount(parseMoney(e.target.value))}
-                                                   placeholder="0.00"
-                                                   className="w-full bg-[var(--bg-secondary)] pl-5 pr-2 py-2 rounded-lg text-xs font-black outline-none"
-                                                />
-                                             </div>
-                                          </div>
-                                          <div className="flex gap-2 pt-1">
-                                             <button 
-                                                onClick={handleTransfer}
-                                                disabled={isTransferring || !transferAmount || !transferFrom || !transferTo}
-                                                className="flex-1 py-1.5 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest disabled:opacity-50"
-                                             >
-                                                Confirmar
-                                             </button>
-                                             <button 
-                                                onClick={() => setShowTransferForm(false)}
-                                                className="px-3 py-1.5 text-[var(--text-muted)] text-[9px] font-black uppercase hover:text-[var(--text-primary)]"
-                                             >
-                                                Cancelar
-                                             </button>
-                                          </div>
-                                       </div>
-                                    )}
-                                 </div>
                               </section>
 
-                              {/* SECCIÓN 3: TARJETAS DE CRÉDITO (Deuda) */}
-                              <section className="space-y-4">
+                              {/* SECCIÓN 4: TARJETAS DE CRÉDITO */}
+                              <section className="space-y-4 mb-20">
                                  <div className="flex items-center justify-between px-1">
                                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500/70 italic">Tarjetas de Crédito</h4>
                                     <span className="text-[10px] font-bold text-red-500/50 uppercase tracking-widest">Deuda Actual</span>
@@ -913,21 +828,17 @@ export default function DashboardClient({
                                        ))
                                     )}
                                  </div>
-                                 <div className="pt-2 flex justify-between items-center px-1">
-                                    <span className="text-[10px] font-black uppercase text-red-500/60">Deuda Total Tarjetas</span>
-                                    <span className="font-black text-red-600 dark:text-red-400 text-xs">${totalCreditDebt.toLocaleString()}</span>
-                                 </div>
                               </section>
                            </div>
 
                            {/* Footer */}
-                           <div className="p-8 pt-6 border-t border-[var(--border-color)] bg-[var(--bg-secondary)]/30">
+                           <div className="p-8 pt-6 border-t border-[var(--border-color)] bg-[var(--bg-secondary)]/30 rounded-b-[24px]">
                               <div className="flex justify-between items-center">
                                  <div className="space-y-0.5">
-                                    <p className="text-[11px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em] italic leading-tight">Saldo Disponible Total</p>
-                                    <p className="text-[9px] font-medium text-[var(--text-muted)] tracking-wider">No incluye ahorro ni deudas de tarjetas</p>
+                                    <p className="text-[11px] font-black text-[var(--text-primary)] uppercase tracking-[0.1em] italic leading-tight">Total en Cuentas</p>
+                                    <p className="text-[9px] font-medium text-[var(--text-muted)] tracking-wider">Cuentas Débito + Efectivo</p>
                                  </div>
-                                 <p className="text-4xl font-black text-[var(--text-primary)] tracking-tighter"><CurrencyDisplay amount={freeBalance} /></p>
+                                 <p className="text-4xl font-black text-[var(--text-primary)] tracking-tighter"><CurrencyDisplay amount={rawAccountBalance} /></p>
                               </div>
                            </div>
                         </div>
