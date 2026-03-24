@@ -690,11 +690,13 @@ export default function DashboardClient({
                         <CurrencyDisplay amount={freeBalance} />
                     </h2>
                     <Dialog open={activeModal === 'balance_breakdown'} onOpenChange={(open) => setActiveModal(open ? 'balance_breakdown' : null)}>
-                      <DialogTrigger asChild>
-                        <div className="text-[var(--text-muted)] text-[10px] uppercase font-black tracking-widest mt-2 hover:text-white transition-all flex items-center gap-1 cursor-pointer group">
-                            VER DESGLOSE <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                        </div>
-                      </DialogTrigger>
+                      <DialogTrigger
+                        render={
+                          <div className="text-[var(--text-muted)] text-[10px] uppercase font-black tracking-widest mt-2 hover:text-white transition-all flex items-center gap-1 cursor-pointer group">
+                            VER DESGLOSE <ChevronRight className="w-2.5 h-2.5" />
+                          </div>
+                        }
+                      />
                       <DialogContent 
                         className="bg-[var(--bg-card)] border-none text-[var(--text-primary)] p-0 overflow-hidden sm:max-w-[420px] w-[92vw] rounded-[24px] shadow-3xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-1/2 md:bottom-auto"
                         style={{ zIndex: 9999 }}

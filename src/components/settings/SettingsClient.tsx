@@ -163,7 +163,7 @@ export function SettingsClient({ userSettings, notificationSettings, userEmail }
               <Settings2 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tight italic uppercase italic">Configuración</h1>
+              <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tight italic uppercase">Configuración</h1>
               <p className="text-xs text-[var(--text-muted)] font-medium">Personaliza tu experiencia Buco</p>
             </div>
           </div>
@@ -347,16 +347,18 @@ export function SettingsClient({ userSettings, notificationSettings, userEmail }
                 </div>
               </div>
               <Dialog open={activeDialog === 'whatsapp'} onOpenChange={(o) => setActiveDialog(o ? 'whatsapp' : null)}>
-                <DialogTrigger asChild>
-                  <button className={cn(
-                    "text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-xl transition-all cursor-pointer border-none shadow-sm",
-                    userSettings?.whatsapp_connected
-                      ? "bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
-                      : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border border-emerald-500/20"
-                  )}>
-                    {userSettings?.whatsapp_connected ? "Gestionar" : "Conectar"}
-                  </button>
-                </DialogTrigger>
+                <DialogTrigger
+                  render={
+                    <button className={cn(
+                      "text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-xl transition-all cursor-pointer border-none shadow-sm",
+                      userSettings?.whatsapp_connected
+                        ? "bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
+                        : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border border-emerald-500/20"
+                    )}>
+                      {userSettings?.whatsapp_connected ? "Gestionar" : "Conectar"}
+                    </button>
+                  }
+                />
                 <DialogContent className="max-w-sm rounded-3xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)]">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-black text-[var(--text-primary)] uppercase italic">Vincular WhatsApp</DialogTitle>
@@ -398,16 +400,18 @@ export function SettingsClient({ userSettings, notificationSettings, userEmail }
                 </div>
               </div>
               <Dialog open={activeDialog === 'telegram'} onOpenChange={(o) => setActiveDialog(o ? 'telegram' : null)}>
-                <DialogTrigger asChild>
-                  <button className={cn(
-                    "text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-xl transition-all cursor-pointer border-none shadow-sm",
-                    userSettings?.telegram_connected
-                      ? "bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
-                      : "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border border-blue-500/20"
-                  )}>
-                    {userSettings?.telegram_connected ? "Gestionar" : "Conectar"}
-                  </button>
-                </DialogTrigger>
+                <DialogTrigger
+                  render={
+                    <button className={cn(
+                      "text-[10px] font-black uppercase tracking-wider px-4 py-2 rounded-xl transition-all cursor-pointer border-none shadow-sm",
+                      userSettings?.telegram_connected
+                        ? "bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]"
+                        : "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border border-blue-500/20"
+                    )}>
+                      {userSettings?.telegram_connected ? "Gestionar" : "Conectar"}
+                    </button>
+                  }
+                />
                 <DialogContent className="max-w-sm rounded-3xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)]">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-black text-[var(--text-primary)] uppercase italic">Vincular Telegram</DialogTitle>
@@ -477,20 +481,22 @@ export function SettingsClient({ userSettings, notificationSettings, userEmail }
 
             {/* Eliminar cuenta */}
             <Dialog open={activeDialog === 'delete'} onOpenChange={(o) => setActiveDialog(o ? 'delete' : null)}>
-              <DialogTrigger asChild>
-                <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-red-500/5 transition-all cursor-pointer group border-none bg-transparent">
-                  <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-xl bg-red-500/10 flex items-center justify-center">
-                      <Trash2 className="w-4 h-4 text-red-500" />
+              <DialogTrigger
+                render={
+                  <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-red-500/5 transition-all cursor-pointer group border-none bg-transparent">
+                    <div className="flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-xl bg-red-500/10 flex items-center justify-center">
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-semibold text-red-500">Eliminar mi cuenta</p>
+                        <p className="text-xs text-[var(--text-muted)]">Esta acción es permanente</p>
+                      </div>
                     </div>
-                    <div className="text-left">
-                      <p className="text-sm font-semibold text-red-500">Eliminar mi cuenta</p>
-                      <p className="text-xs text-[var(--text-muted)]">Esta acción es permanente</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-red-500/30 group-hover:text-red-500/60 transition-colors" />
-                </button>
-              </DialogTrigger>
+                    <ChevronRight className="w-4 h-4 text-red-500/30 group-hover:text-red-500/60 transition-colors" />
+                  </button>
+                }
+              />
               <DialogContent className="max-w-sm rounded-3xl bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)]">
                 <DialogHeader>
                   <DialogTitle className="text-xl font-black text-red-500 uppercase italic">Acción Irreversible</DialogTitle>
