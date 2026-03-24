@@ -43,7 +43,7 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cn(
-      "rounded-2xl bg-white/[0.04] border border-white/8 overflow-hidden",
+      "rounded-2xl bg-white/[0.04] overflow-hidden",
       className
     )}>
       {children}
@@ -94,10 +94,11 @@ export function SettingsClient({ userSettings, notificationSettings, userEmail }
   const handleUpdateSetting = async (key: string, value: any) => {
     await updateUserSettings({ [key]: value });
     if (key === 'theme') {
-      document.documentElement.classList.toggle(
-        'dark',
-        value === 'dark' || (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-      );
+      localStorage.setItem('buco-theme', value);
+      const isDark =
+        value === 'dark' ||
+        (value === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.classList.toggle('dark', isDark);
     }
   };
 
@@ -141,7 +142,7 @@ export function SettingsClient({ userSettings, notificationSettings, userEmail }
   ];
 
   return (
-    <div className="min-h-screen bg-[#060913] pb-32">
+    <div className="min-h-screen bg-background pb-32">
       {/* Background blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px]" />

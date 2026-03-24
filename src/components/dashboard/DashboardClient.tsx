@@ -693,12 +693,15 @@ export default function DashboardClient({
                         <CurrencyDisplay amount={freeBalance} />
                     </h2>
                     <Dialog open={activeModal === 'balance_breakdown'} onOpenChange={(open) => setActiveModal(open ? 'balance_breakdown' : null)}>
-                      <DialogTrigger>
-                        <div className="text-[var(--text-muted)] text-[10px] uppercase font-black tracking-widest mt-2 hover:text-white transition-all flex items-center gap-1 cursor-pointer">
-                            VER DESGLOSE <ChevronRight className="w-3 h-3" />
+                      <DialogTrigger asChild>
+                        <div className="text-[var(--text-muted)] text-[10px] uppercase font-black tracking-widest mt-2 hover:text-white transition-all flex items-center gap-1 cursor-pointer group">
+                            VER DESGLOSE <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                         </div>
                       </DialogTrigger>
-                      <DialogContent className="bg-[var(--bg-card)] border-none text-[var(--text-primary)] p-0 overflow-hidden sm:max-w-[420px] w-[92vw] rounded-[24px] shadow-3xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-1/2 md:bottom-auto">
+                      <DialogContent 
+                        className="bg-[var(--bg-card)] border-none text-[var(--text-primary)] p-0 overflow-hidden sm:max-w-[420px] w-[92vw] rounded-[24px] shadow-3xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:top-1/2 md:bottom-auto"
+                        style={{ zIndex: 9999 }}
+                      >
                         <div className="flex flex-col max-h-[85vh]">
                            {/* Header */}
                            <div className="p-6 pb-2 flex justify-between items-center border-b border-[var(--border-color)]">
@@ -713,8 +716,7 @@ export default function DashboardClient({
                                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] italic">Cálculo de Flujo</h4>
                                      <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Saldo Mensual</span>
                                   </div>
-                                  
-                                  <div className="space-y-3">
+                                   <div className="space-y-3">
                                      {/* SALDO CUENTAS DÉBITO (+) */}
                                      <div className="flex justify-between items-center p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
                                         <div className="flex items-center gap-3">
@@ -723,7 +725,7 @@ export default function DashboardClient({
                                            </div>
                                            <div className="flex flex-col">
                                               <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">Saldo Cuentas Débito</span>
-                                              <span className="text-[9px] font-bold text-emerald-500/50 uppercase tracking-wider">Corriente · Nómina · Débito</span>
+                                              <span className="text-[9px] font-bold text-emerald-500/50 uppercase tracking-wider">Cuentas y Tarjetas Débito</span>
                                            </div>
                                         </div>
                                         <span className="font-black text-emerald-600 dark:text-emerald-400 text-sm">
@@ -731,50 +733,40 @@ export default function DashboardClient({
                                         </span>
                                      </div>
 
-                                     {/* GASTOS (-) */}
-                                     <div className="flex justify-between items-center p-4 bg-red-500/5 rounded-2xl border border-red-500/10">
-                                        <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
-                                              <TrendingDown className="w-4 h-4 text-red-500" />
-                                           </div>
-                                           <div className="flex flex-col">
-                                              <span className="text-xs font-black text-red-600 dark:text-red-400">Gastos del Mes</span>
-                                              <span className="text-[9px] font-bold text-red-500/50 uppercase tracking-wider">Transacciones Realizadas</span>
-                                           </div>
-                                        </div>
-                                        <span className="font-black text-red-600 dark:text-red-400 text-sm">
-                                           -<CurrencyDisplay amount={totalMonthlyExpenses} />
-                                        </span>
+                                     <div className="h-px bg-[var(--border-color)] mx-4 my-2 opacity-50" />
+
+                                     <div className="px-1 mb-2">
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-red-500/60 italic">Reservas Automáticas</h4>
                                      </div>
 
                                      {/* DEUDAS (-) */}
-                                     <div className="flex justify-between items-center p-4 bg-orange-500/5 rounded-2xl border border-orange-500/10">
+                                     <div className="flex justify-between items-center p-4 bg-red-500/5 rounded-2xl border border-red-500/10 opacity-80">
                                         <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
-                                              <AlertCircle className="w-4 h-4 text-orange-500" />
+                                           <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+                                              <AlertCircle className="w-4 h-4 text-red-500" />
                                            </div>
                                            <div className="flex flex-col">
-                                              <span className="text-xs font-black text-orange-600 dark:text-orange-400">Cuotas de Deudas</span>
-                                              <span className="text-[9px] font-bold text-orange-500/50 uppercase tracking-wider">Préstamos y Otros</span>
+                                              <span className="text-xs font-black text-red-600 dark:text-red-400">Cuotas de Deudas</span>
+                                              <span className="text-[9px] font-bold text-red-500/50 uppercase tracking-wider">Compromisos Activos</span>
                                            </div>
                                         </div>
-                                        <span className="font-black text-orange-600 dark:text-orange-400 text-sm">
+                                        <span className="font-black text-red-600 dark:text-red-400 text-sm">
                                            -<CurrencyDisplay amount={totalDebtInstallments} />
                                         </span>
                                      </div>
 
                                      {/* PAGOS MINIMOS (-) */}
-                                     <div className="flex justify-between items-center p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/10">
+                                     <div className="flex justify-between items-center p-4 bg-red-500/5 rounded-2xl border border-red-500/10 opacity-80">
                                         <div className="flex items-center gap-3">
-                                           <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
-                                              <CreditCard className="w-4 h-4 text-indigo-500" />
+                                           <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+                                              <CreditCard className="w-4 h-4 text-red-500" />
                                            </div>
                                            <div className="flex flex-col">
-                                              <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">Pagos Mínimos TC</span>
-                                              <span className="text-[9px] font-bold text-indigo-500/50 uppercase tracking-wider">Tarjetas de Crédito</span>
+                                              <span className="text-xs font-black text-red-600 dark:text-red-400">Reserva Pagos TC</span>
+                                              <span className="text-[8px] font-bold text-red-500/50 uppercase tracking-wider">Ahorro para pago mínimo (5%)</span>
                                            </div>
                                         </div>
-                                        <span className="font-black text-indigo-600 dark:text-indigo-400 text-sm">
+                                        <span className="font-black text-red-600 dark:text-red-400 text-sm">
                                            -<CurrencyDisplay amount={totalMinPayments} />
                                         </span>
                                      </div>
@@ -787,7 +779,7 @@ export default function DashboardClient({
                                      <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-muted)] italic">Distribución de Fondos</h4>
                                      <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Saldo Real</span>
                                   </div>
-                                  <div className="space-y-2">
+                                  <div className="space-y-2 pb-20">
                                      {normalAccounts.map(acc => (
                                         <div key={acc.id} className="flex justify-between items-center p-3.5 bg-white/5 rounded-2xl border border-white/5">
                                            <div className="flex flex-col">
@@ -941,9 +933,9 @@ export default function DashboardClient({
                         </div>
                       </DialogContent>
                     </Dialog>
+                 </div>
                 </div>
-               </div>
-
+              </div>
                 <div className="flex flex-col items-center md:items-end w-full md:w-auto gap-3">
                    {/* AHORRO PROYECTADO pill */}
                    <div className="flex px-3.5 py-2.5 bg-white/10 backdrop-blur-md rounded-xl md:rounded-2xl border border-white/10 items-center gap-3 h-fit group transition-all hover:bg-white/20">
@@ -1523,7 +1515,6 @@ export default function DashboardClient({
           </Dialog>
 
         </main>
-      </div>
 
 
 
