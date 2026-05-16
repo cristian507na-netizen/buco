@@ -39,9 +39,17 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('auth timeout')), 5000)
+    )
+    const userPromise = supabase.auth.getUser()
+    const { data } = await Promise.race([userPromise, timeoutPromise]) as any
+    user = data?.user
+  } catch (err) {
+    user = null
+  }
 
   // Allow /welcome, /login, /signup and /auth routes without a user
   const isAuthRoute =
