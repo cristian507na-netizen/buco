@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Playfair_Display, DM_Sans } from 'next/font/google'
 
 const playfair = Playfair_Display({
@@ -978,14 +977,18 @@ export default function WelcomePage() {
 
       <section className="lp-hero" id="hero">
         <div className="hero-visuals">
-          <Image
-            src="/hero.png"
-            alt="Buco Finance"
-            className="hero-image"
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 100vw"
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <picture>
+            <source media="(max-width: 768px)" srcSet="/hero-mobile.webp" />
+            <source srcSet="/hero.webp" type="image/webp" />
+            <img
+              src="/hero.png"
+              alt="Buco Finance"
+              className="hero-image"
+              loading="eager"
+              decoding="async"
+            />
+          </picture>
           <canvas ref={canvasRef} id="fx-canvas" />
           <div className="light-ray" />
           <div className="light-ray-2" />
