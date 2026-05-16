@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Playfair_Display, DM_Sans } from 'next/font/google'
 
 const playfair = Playfair_Display({
@@ -977,8 +978,14 @@ export default function WelcomePage() {
 
       <section className="lp-hero" id="hero">
         <div className="hero-visuals">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/hero.png" alt="Buco Finance" className="hero-image" />
+          <Image
+            src="/hero.png"
+            alt="Buco Finance"
+            className="hero-image"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 100vw"
+          />
           <canvas ref={canvasRef} id="fx-canvas" />
           <div className="light-ray" />
           <div className="light-ray-2" />
